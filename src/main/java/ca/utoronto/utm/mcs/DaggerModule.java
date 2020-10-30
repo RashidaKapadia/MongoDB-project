@@ -15,9 +15,6 @@ import com.mongodb.client.MongoClients;
 
 @Module
 public class DaggerModule {
-
-	private static HttpServer server;
-	private static MongoClient db;
 	
     @Provides public MongoClient provideMongoClient() {
         /* TODO: Fill in this function */
