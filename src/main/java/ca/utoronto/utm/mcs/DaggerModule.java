@@ -32,15 +32,9 @@ public class DaggerModule {
         // MongoDatabase database = mongoClient.getDatabase("csc301a2");
         // MongoCollection<Document> collection = database.getCollection("posts");
 
-        // confused about what to return... collection or the client or collection 
-        // i'm gonna go with database since there is a get and set DB in Dagger.java
-        // nvm got to return mongoClient
-
     	return mongoClient;
     }
 
-    // added the throws IOException, not sure if i should do a try catch...
-    // confrimed from piazza and trial and error can't throw it need to try catch
     @Provides public HttpServer provideHttpServer(){
         /* TODO: Fill in this function */
 
