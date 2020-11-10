@@ -32,16 +32,14 @@ public class PostEndPoints implements HttpHandler {
     private MongoClient db;
 
     /* Establish driver of the db */
+    @Inject
     public PostEndPoints(MongoClient db) {
         this.db = db;
     }
 
     @Override
-    @Inject
     public void handle(HttpExchange r) throws IOException {
-
-        // Dagger service = DaggerDaggerComponent.builder().build().buildMongoHttp();
-
+        
         // get db
         MongoDatabase database = db.getDatabase("csc301a2");
         MongoCollection<Document> collection = database.getCollection("posts");
@@ -54,6 +52,7 @@ public class PostEndPoints implements HttpHandler {
             }
         } else if (r.getRequestMethod().equals("GET")) {
             try {
+                System.out.println("going inside getPost");
                 getPost(r, collection);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -173,28 +172,43 @@ public class PostEndPoints implements HttpHandler {
             }
 
             if (_id == "") {
-                MongoCursor<Document> cursor = collection.find(eq("title", title)).iterator();
-                try {
-                    response = "[";
-                    while (cursor.hasNext()) {
-                        response = response + cursor.next().toJson() + " , ";
-                    }
-                } finally {
-                    cursor.close();
+                MongoCursor<Document> cursor = collection.find(regex("title", "" + title + "")).iterator();
+                response = "[";
+                while (cursor.hasNext()) {
+                    response = response + cursor.next().toJson() + " , ";
                 }
-                response = response.substring(0, response.length() - 3);
-                response = response + "]";
+                cursor.close();
+
+                System.out.println(response);
+                if (response.length() > 3) {
+                    response = response.substring(0, response.length() - 3);
+                    response = response + "]";
+                } else {
+                    r.sendResponseHeaders(404, -1);
+                    return;
+                }
             } else {
-                System.out.println(_id);
-                Document myDoc = collection.find(eq("_id", new ObjectId(_id))).first();
-                response = myDoc.toJson();
+                if (_id.length() == 24) {
+                    System.out.println(_id);
+                    // Document myDoc
+                    MongoCursor<Document> cursor = collection.find(eq("_id", new ObjectId(_id))).iterator();
+                    if (cursor.hasNext()) {
+                        response = cursor.next().toJson();
+                    } else {
+                        r.sendResponseHeaders(404, -1);
+                        return;
+                    }
+                } else {
+                    r.sendResponseHeaders(404, -1);
+                    return;
+                }
             }
 
             byte[] bs = response.getBytes("UTF-8");
             r.sendResponseHeaders(200, bs.length);
             OutputStream os = r.getResponseBody();
             os.write(bs);
-
+            os.close();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
@@ -231,16 +245,21 @@ public class PostEndPoints implements HttpHandler {
                 return;
             }
 
-            DeleteResult myDoc = collection.deleteOne(eq("_id", new ObjectId(_id)));
-            if (myDoc.getDeletedCount() == 0) {
+            if (_id.length() == 24) {
+                DeleteResult myDoc = collection.deleteOne(eq("_id", new ObjectId(_id)));
+                if (myDoc.getDeletedCount() == 0) {
+                    r.sendResponseHeaders(404, -1);
+                    return;
+                }
+                r.sendResponseHeaders(200, 0);
+                OutputStream os = r.getResponseBody();
+                os.write("".getBytes());
+                os.close();
+
+            } else {
                 r.sendResponseHeaders(404, -1);
                 return;
             }
-            r.sendResponseHeaders(200, 0);
-            OutputStream os = r.getResponseBody();
-            os.write("".getBytes());
-            os.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (JSONException e) {
