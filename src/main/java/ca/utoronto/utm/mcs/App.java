@@ -19,11 +19,13 @@ public class App
     	//Create your server context here
         
         service.getServer().start();
-        
-    	// PUT post api
-        service.getServer().createContext("/api/v1/post", new PostEndPoints(service.getDb()));
 
-        System.out.printf("Server started on port %d\n", port);
+        PostEndPoints api = DaggerDaggerComponent.create().buildEndPoints();
         
+        // PUT post api
+        
+        service.getServer().createContext("/api/v1/post", api);
+
+        System.out.printf("Server started on port %d\n", port);   
     }
 }
