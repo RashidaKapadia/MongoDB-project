@@ -15,6 +15,8 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.result.DeleteResult;
+
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import static com.mongodb.client.model.Filters.*;
@@ -61,7 +63,7 @@ public class PostEndPoints implements HttpHandler {
             }
         } else if (r.getRequestMethod().equals("DELETE")) {
             try {
-                // deletePost(r);
+                deletePost(r, collection);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -138,15 +140,55 @@ public class PostEndPoints implements HttpHandler {
         os.close();
     }
 
-    public void getPost(HttpExchange r, MongoCollection<Document> collection) {
+    public void deletePost(HttpExchange r, MongoCollection<Document> collection) {
         try {
             System.out.println("reached here");
             // Convert Body to JSON Object
             String title = "";
             String _id = "";
             String response = "";
-            // Object _id;
-            // FindIterable<Document> findIterable;
+
+            JSONObject deserialized = new JSONObject();
+            try {
+                String body = Utils.convert(r.getRequestBody());
+                deserialized = new JSONObject(body);
+            } catch (JSONException e) {
+                r.sendResponseHeaders(400, -1);
+                return;
+            } catch (IOException e) {
+                r.sendResponseHeaders(500, -1);
+                return;
+            }
+
+            // Get Data from JSON
+            // id
+            if (deserialized.has("_id")) {
+                _id = deserialized.getString("_id");
+            } else {
+                r.sendResponseHeaders(400, -1);
+                return;
+            }
+
+            DeleteResult myDoc = collection.deleteOne(eq("_id", new ObjectId(_id)));
+            r.sendResponseHeaders(200, 0);
+            OutputStream os = r.getResponseBody();
+            os.write("".getBytes());
+            os.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void getPost(HttpExchange r, MongoCollection<Document> collection) {
+        try {
+            System.out.println("reached here");
+            // Convert Body to JSON Object
+            String _id = "";
+            String response = "";
+
             JSONObject deserialized = new JSONObject();
             try {
                 String body = Utils.convert(r.getRequestBody());
