@@ -22,21 +22,13 @@ public class DaggerModule {
     static int port = 8080;
 	
     @Provides public MongoClient provideMongoClient() {
-        /* TODO: Fill in this function */
-
+        
         MongoClient mongoClient = MongoClients.create();
-
-        // MongoClient mongoClient = new MongoClient();
-        // MongoClient mongoClient = new MongoClient( "localhost" , 27017 );
-
-        // MongoDatabase database = mongoClient.getDatabase("csc301a2");
-        // MongoCollection<Document> collection = database.getCollection("posts");
 
     	return mongoClient;
     }
 
     @Provides public HttpServer provideHttpServer(){
-        /* TODO: Fill in this function */
 
         HttpServer server = null;
 
