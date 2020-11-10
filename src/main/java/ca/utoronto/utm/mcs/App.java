@@ -18,8 +18,12 @@ public class App
     	
     	//Create your server context here
         
-    	service.getServer().start();
-    	
-    	System.out.printf("Server started on port %d", port);
+        service.getServer().start();
+        
+    	// PUT post api
+        service.getServer().createContext("/api/v1/post", new PostEndPoints(service.getDb()));
+
+        System.out.printf("Server started on port %d", port);
+        
     }
 }

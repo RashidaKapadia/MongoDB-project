@@ -5,15 +5,19 @@ import javax.inject.Inject;
 import com.mongodb.client.MongoClient;
 import com.sun.net.httpserver.HttpServer;
 
+// import dagger.Provides;
+
 public class Dagger {
 
 	private HttpServer server;
 	private MongoClient db;
 
+
 	@Inject
 	public Dagger(HttpServer server, MongoClient db) {
 		this.server = server;
 		this.db = db;
+		// this.server.createContext("/api/v1/post", new PostEndPoints());
 	}
 
 	public HttpServer getServer() {
