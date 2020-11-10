@@ -21,7 +21,7 @@ public class App
         service.getServer().start();
         
     	// PUT post api
-        // service.getServer().createContext("/api/v1/post", new PostEndPoints());
+        service.getServer().createContext("/api/v1/post", new PostEndPoints(service.getDb()));
 
         System.out.printf("Server started on port %d", port);
         

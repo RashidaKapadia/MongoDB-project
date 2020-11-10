@@ -17,7 +17,7 @@ public class Dagger {
 	public Dagger(HttpServer server, MongoClient db) {
 		this.server = server;
 		this.db = db;
-		this.server.createContext("/api/v1/post", new PostEndPoints());
+		// this.server.createContext("/api/v1/post", new PostEndPoints());
 	}
 
 	public HttpServer getServer() {
@@ -28,7 +28,6 @@ public class Dagger {
 		this.server = server;
 	}
 
-	@Provides
 	public MongoClient getDb() {
 		return this.db;
 	}
