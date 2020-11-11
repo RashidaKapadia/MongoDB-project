@@ -4,15 +4,11 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.inject.Inject;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
@@ -37,9 +33,17 @@ public class PostEndPoints implements HttpHandler {
         this.db = db;
     }
 
+    public MongoClient getDb() {
+        return this.db;
+    }
+
+    public void setDb(MongoClient db) {
+        this.db = db;
+    }
+
     @Override
     public void handle(HttpExchange r) throws IOException {
-        
+
         // get db
         MongoDatabase database = db.getDatabase("csc301a2");
         MongoCollection<Document> collection = database.getCollection("posts");
@@ -52,7 +56,6 @@ public class PostEndPoints implements HttpHandler {
             }
         } else if (r.getRequestMethod().equals("GET")) {
             try {
-                System.out.println("going inside getPost");
                 getPost(r, collection);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -179,7 +182,6 @@ public class PostEndPoints implements HttpHandler {
                 }
                 cursor.close();
 
-                System.out.println(response);
                 if (response.length() > 3) {
                     response = response.substring(0, response.length() - 3);
                     response = response + "]";
@@ -189,8 +191,6 @@ public class PostEndPoints implements HttpHandler {
                 }
             } else {
                 if (_id.length() == 24) {
-                    System.out.println(_id);
-                    // Document myDoc
                     MongoCursor<Document> cursor = collection.find(eq("_id", new ObjectId(_id))).iterator();
                     if (cursor.hasNext()) {
                         response = cursor.next().toJson();
@@ -219,9 +219,7 @@ public class PostEndPoints implements HttpHandler {
     public void deletePost(HttpExchange r, MongoCollection<Document> collection) {
         try {
 
-            String title = "";
             String _id = "";
-            String response = "";
 
             // Convert Body to JSON Object
             JSONObject deserialized = new JSONObject();
