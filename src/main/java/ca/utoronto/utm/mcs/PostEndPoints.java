@@ -12,7 +12,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.result.DeleteResult;
-
+import com.mongodb.BasicDBObject;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 import static com.mongodb.client.model.Filters.*;
@@ -175,7 +175,7 @@ public class PostEndPoints implements HttpHandler {
             }
 
             if (_id == "") {
-                MongoCursor<Document> cursor = collection.find(regex("title", "" + title + "")).iterator();
+                MongoCursor<Document> cursor = collection.find(regex("title", "" + title + "")).sort(new BasicDBObject("title",1)).iterator();
                 response = "[";
                 while (cursor.hasNext()) {
                     response = response + cursor.next().toJson() + " , ";
