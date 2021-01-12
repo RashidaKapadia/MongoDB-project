@@ -1,5 +1,6 @@
 # MongoDB-project
 a2-r-d-1 created by GitHub Classroom
+
 Collaborated with ParekhDevanshi (https://github.com/ParekhDevanshi)
 
 A simple blog post api which included the following REST API Endpoints:
