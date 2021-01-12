@@ -12,6 +12,9 @@ This assignment was for an 'Intro to Software Engineering' course at UofT
 Course handout specifies the requests and responses of the above APIs - https://cmsweb.utsc.utoronto.ca/cscc01f20/assignments/a2handout.pdf
 
 This assignment focuses on:
+
 • Enterprise Design Patterns, specifically dependency injection and Google Dagger2
+
 • NoSQL databases, specifically Mongo DB
+
 • Experience with Git Flow
