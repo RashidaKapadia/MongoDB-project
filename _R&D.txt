@@ -1,3 +1,0 @@
-Team Name,utorid,Automarker,Database (x3),Git Flow,dependency-dagger,dependency-class,total,remark deduction,Git flow comments,Dependency Comments
-R&D,parekhd1,100,1,1,2,1.5,97.37,,,Don't extract provideMongoClient into another class.
-If you have any questions or want a remark (with 20% penalty), please send an email to chungeng.meng@mail.utoronto.ca with your team name and request
